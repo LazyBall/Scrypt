@@ -4,13 +4,130 @@ using System.Text;
 
 namespace Scrypt
 {
-    class Scrypt
+    /// <summary>
+    /// The scrypt Algorithm.
+    /// </summary>
+    public static class Scrypt
     {
-        public byte[] Encode(string password, string salt, int N, int r, int p, int dkLen)
+        /// <summary>
+        /// Encodes the current passphrase and salt, given as a string.
+        /// UTF8 encoding is used to convert the passphrase and salt to a byte array.
+        /// </summary>
+        /// <param name="passphrase"> Passphrase, an octet string. </param>
+        /// <param name="salt"> Salt, an octet string. </param>
+        /// <param name="N"> CPU/Memory cost parameter, must be larger than 1,
+        /// a power of 2, and less than 2^(128 * r / 8). </param>
+        /// <param name="r"> Block size parameter. </param>
+        /// <param name="p"> Parallelization parameter, a positive integer
+        /// less than or equal to((2^32-1) * hLen) / MFLen
+        /// where hLen is 32 and MFlen is 128 * r. </param>
+        /// <param name="dkLen"> Intended output length in octets of the derived
+        /// key; a positive integer less than or equal to
+        /// (2^32 - 1) * hLen where hLen is 32. </param>
+        /// <returns> Derived key, of length dkLen octets. </returns>
+        /// <example>
+        /// <code>
+        /// Scrypt.Encode("pleaseletmein", "SodiumChloride", 16384, 8, 1, 64)
+        /// </code>
+        /// </example>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="passphrase"/> or <paramref name="salt"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="salt"/> does not meet the requirements
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// One of the parameters <paramref name="N"/>, <paramref name="r"/>, <paramref name="p"/>, 
+        /// <paramref name="dkLen"/> does not meet the requirements.
+        /// </exception>
+        /// <exception cref="Exception"> Internal error. </exception>
+        /// <seealso cref="Scrypt.Encode(byte[], byte[], int, int, int, int)"/>
+        public static byte[] Encode(string passphrase, string salt, int N, int r, int p, int dkLen)
         {
-            byte[] P = Encoding.UTF8.GetBytes(password);
+            byte[] P = Encoding.UTF8.GetBytes(passphrase);
             byte[] S = Encoding.UTF8.GetBytes(salt);
-            return MFcrypt(P, S, N, r, p, dkLen);
+            return Scrypt.Encode(P, S, N, r, p, dkLen);
+        }
+
+        /// <summary>
+        /// Encodes the current passphrase and salt, given as a bytes array.
+        /// </summary>
+        /// <param name="passphrase"> Passphrase as byte array. </param>
+        /// <param name="salt"> Salt as a byte array. At least eight bytes. </param>
+        /// <param name="N"> CPU/Memory cost parameter, must be larger than 1,
+        /// a power of 2, and less than 2^(128 * r / 8). </param>
+        /// <param name="r"> Block size parameter. </param>
+        /// <param name="p"> Parallelization parameter, a positive integer
+        /// less than or equal to((2^32-1) * hLen) / MFLen
+        /// where hLen is 32 and MFlen is 128 * r. </param>
+        /// <param name="dkLen"> Intended output length in octets of the derived
+        /// key; a positive integer less than or equal to
+        /// (2^32 - 1) * hLen where hLen is 32. </param>
+        /// <returns> Derived key, of length dkLen octets. </returns>
+        /// <example>
+        /// <code>
+        /// Scrypt.Encode(new byte[] { 0x70 }, new byte[] { 0x70, 0x6C, 0x65, 0x61, 0x73, 0x65, 0x6C, 0x65 }, 16384, 8, 1, 64)
+        /// </code>
+        /// </example>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="passphrase"/> or <paramref name="salt"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="salt"/> does not meet the requirements
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// One of the parameters <paramref name="N"/>, <paramref name="r"/>, <paramref name="p"/>, 
+        /// <paramref name="dkLen"/> does not meet the requirements.
+        /// </exception>
+        /// <exception cref="Exception"> Internal error. </exception>
+        /// <seealso cref="Scrypt.Encode(string, string, int, int, int, int)"/>
+        public static byte[] Encode(byte[] passphrase, byte[] salt, int N, int r, int p, int dkLen)
+        {
+            if (passphrase is null)
+            {
+                throw new ArgumentNullException("Passphrase must be not null.", nameof(passphrase));
+            }
+            if (salt is null)
+            {
+                throw new ArgumentNullException("Salt must be not null.", nameof(salt));
+            }
+            Scrypt.CheckParameters(salt, N, r, p, dkLen);
+            return Scrypt.MFcrypt(passphrase, salt, N, r, p, dkLen);
+        }
+
+        private static void CheckParameters(byte[] salt, int N, int r, int p, int dkLen)
+        {
+            if (salt.Length < 8)
+            {
+                throw new ArgumentException("Salt is not at least eight bytes.",
+                    nameof(salt));
+            }
+            if (dkLen < 1)
+            {
+                throw new ArgumentOutOfRangeException("Intended output length must be " +
+                    "a positive integer.", nameof(dkLen));
+            }
+            if (r < 1)
+            {
+                throw new ArgumentOutOfRangeException("Block size parameter must be " +
+                    "a positive integer.", nameof(r));
+            }
+            if ((N <= 1) || ((N & (N - 1)) != 0))
+            {
+                throw new ArgumentOutOfRangeException("CPU / Memory cost parameter must be " +
+                    "larger than 1, a power of 2", nameof(N));
+            }
+            if (r == 1 && N >= (1 << 16))
+            {
+                throw new ArgumentOutOfRangeException("CPU / Memory cost parameter must be less " +
+                    "than 2^(128 * r / 8).", nameof(N));
+            }
+            if (p < 1 || (ulong)p * (ulong)r >= (1 << 30))
+            {
+                throw new ArgumentOutOfRangeException("Parallelization parameter must be a positive " +
+                    "integer less than or equal to((2 ^ 32 - 1) * hLen) / MFLen " +
+                    "where hLen is 32 and MFlen is 128 * r.", nameof(p));
+            }
         }
 
         private class ByteBlocks
@@ -24,7 +141,9 @@ namespace Scrypt
                 this.BlockSize = Math.DivRem(sourceArray.Length, numberOfBlocks, out int remainder);
                 if (remainder != 0)
                 {
-                    throw new ArgumentException();
+                    throw new Exception(string.Format("Internal error.\n" +
+                        "sourceArray.Length is {0}, numberOfBlocks is {1}.",
+                        sourceArray.Length, numberOfBlocks));
                 }
 
                 this._source = sourceArray;
@@ -49,7 +168,8 @@ namespace Scrypt
                 {
                     if (value.Length != this.BlockSize)
                     {
-                        throw new ArgumentException();
+                        throw new Exception(string.Format("Internal error.\n" +
+                            "value.Length is {0}, BlockSize is {1}.", value.Length, this.BlockSize));
                     }
                     Array.Copy(value, 0, this._source, this.BlockSize * index, this.BlockSize);
                 }
@@ -69,7 +189,7 @@ namespace Scrypt
         /// <summary>
         /// Apply the salsa20/8 core to the provided block.
         /// </summary>
-        public static uint[] Salsa208(uint[] input)
+        private static uint[] Salsa208(uint[] input)
         {
             uint[] x = new uint[16];
             Array.Copy(input, x, input.Length);
@@ -102,7 +222,7 @@ namespace Scrypt
             return x;
         }
 
-        public static uint[] ConvertToUInts(byte[] array)
+        private static uint[] ConvertToUInts(byte[] array)
         {
             uint[] result = new uint[array.Length / 4];
 
@@ -114,7 +234,7 @@ namespace Scrypt
             return result;
         }
 
-        public static byte[] ConvertToBytes(uint[] array)
+        private static byte[] ConvertToBytes(uint[] array)
         {
             byte[] result = new byte[array.Length * 4];
 
@@ -128,14 +248,9 @@ namespace Scrypt
 
         private static byte[] Xor(byte[] array1, byte[] array2)
         {
-            if (array1.Length != array2.Length)
-            {
-                throw new ArgumentException();
-            }
-
             byte[] result = new byte[array1.Length];
 
-            for (int i = 0; i < array1.Length; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 result[i] = (byte)(array1[i] ^ array2[i]);
             }
@@ -143,7 +258,7 @@ namespace Scrypt
             return result;
         }
 
-        public static byte[] BlockMix(int r, byte[] B)
+        private static byte[] BlockMix(int r, byte[] B)
         {
             ByteBlocks blocks = new ByteBlocks(B, 2 * r);
             byte[] X = blocks[2 * r - 1];
@@ -168,11 +283,14 @@ namespace Scrypt
         private static int Integerify(byte[] B, int r)
         {
             ByteBlocks blocks = new ByteBlocks(B, 2 * r);
-            byte[] reqBlock = blocks[2 * r - 1];
-            return (reqBlock[0]) | (reqBlock[1] << 8) | (reqBlock[2] << 16) | (reqBlock[3] << 24);
+            byte[] requiredBlock = blocks[2 * r - 1];
+            return (requiredBlock[0])
+                | (requiredBlock[1] << 8)
+                | (requiredBlock[2] << 16)
+                | (requiredBlock[3] << 24);
         }
 
-        public static byte[] ROMix(int r, byte[] B, int N)
+        private static byte[] ROMix(int r, byte[] B, int N)
         {
             byte[] X = new byte[B.Length];
             B.CopyTo(X, 0);
@@ -182,21 +300,24 @@ namespace Scrypt
             for (int i = 0; i < N; i++)
             {
                 V[i] = X;
-                X = BlockMix(r, X);
+                X = Scrypt.BlockMix(r, X);
             }
 
             for (int i = 0; i < N; i++)
             {
                 int j = Integerify(X, r) % N;
-                if (j < 0) j += N;
+                if (j < 0)
+                {
+                    j += N;
+                }
                 byte[] T = Xor(X, V[j]);
-                X = BlockMix(r, T);
+                X = Scrypt.BlockMix(r, T);
             }
 
             return X;
         }
 
-        private byte[] MFcrypt(byte[] P, byte[] S, int N, int r, int p, int dkLen)
+        private static byte[] MFcrypt(byte[] P, byte[] S, int N, int r, int p, int dkLen)
         {
             ByteBlocks B;
             using (var PBKDF2HMACSHA256 = new Rfc2898DeriveBytes(P, S, 1, HashAlgorithmName.SHA256))
@@ -206,7 +327,7 @@ namespace Scrypt
 
             for (int i = 0; i < p; i++)
             {
-                B[i] = ROMix(r, B[i], N);
+                B[i] = Scrypt.ROMix(r, B[i], N);
             }
 
             using (var PBKDF2HMACSHA256 = new Rfc2898DeriveBytes(P, (byte[])B, 1,
