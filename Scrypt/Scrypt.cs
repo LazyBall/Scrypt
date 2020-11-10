@@ -2,46 +2,18 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Scrypt
+namespace ScryptCryptography
 {
     /// <summary>
     /// The scrypt Algorithm.
     /// </summary>
+    /// <remarks>
+    /// RFC - <see href="https://tools.ietf.org/html/rfc7914"/>
+    /// Article - <see href="http://www.tarsnap.com/scrypt/scrypt.pdf"/>
+    /// </remarks>
     public static class Scrypt
     {
-        /// <summary>
-        /// Encodes the current passphrase and salt, given as a string.
-        /// UTF8 encoding is used to convert the passphrase and salt to a byte array.
-        /// </summary>
-        /// <param name="passphrase"> Passphrase, an octet string. </param>
-        /// <param name="salt"> Salt, an octet string. </param>
-        /// <param name="N"> CPU/Memory cost parameter, must be larger than 1,
-        /// a power of 2, and less than 2^(128 * r / 8). </param>
-        /// <param name="r"> Block size parameter. </param>
-        /// <param name="p"> Parallelization parameter, a positive integer
-        /// less than or equal to((2^32-1) * hLen) / MFLen
-        /// where hLen is 32 and MFlen is 128 * r. </param>
-        /// <param name="dkLen"> Intended output length in octets of the derived
-        /// key; a positive integer less than or equal to
-        /// (2^32 - 1) * hLen where hLen is 32. </param>
-        /// <returns> Derived key, of length dkLen octets. </returns>
-        /// <example>
-        /// <code>
-        /// Scrypt.Encode("pleaseletmein", "SodiumChloride", 16384, 8, 1, 64)
-        /// </code>
-        /// </example>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="passphrase"/> or <paramref name="salt"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="salt"/> does not meet the requirements
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// One of the parameters <paramref name="N"/>, <paramref name="r"/>, <paramref name="p"/>, 
-        /// <paramref name="dkLen"/> does not meet the requirements.
-        /// </exception>
-        /// <exception cref="Exception"> Internal error. </exception>
-        /// <seealso cref="Scrypt.Encode(byte[], byte[], int, int, int, int)"/>
+        /// <include file='docs.xml' path='docs/members[@name="scrypt"]/EncodeString/*'/>
         public static byte[] Encode(string passphrase, string salt, int N, int r, int p, int dkLen)
         {
             byte[] P = Encoding.UTF8.GetBytes(passphrase);
@@ -49,38 +21,7 @@ namespace Scrypt
             return Scrypt.Encode(P, S, N, r, p, dkLen);
         }
 
-        /// <summary>
-        /// Encodes the current passphrase and salt, given as a bytes array.
-        /// </summary>
-        /// <param name="passphrase"> Passphrase as byte array. </param>
-        /// <param name="salt"> Salt as a byte array. At least eight bytes. </param>
-        /// <param name="N"> CPU/Memory cost parameter, must be larger than 1,
-        /// a power of 2, and less than 2^(128 * r / 8). </param>
-        /// <param name="r"> Block size parameter. </param>
-        /// <param name="p"> Parallelization parameter, a positive integer
-        /// less than or equal to((2^32-1) * hLen) / MFLen
-        /// where hLen is 32 and MFlen is 128 * r. </param>
-        /// <param name="dkLen"> Intended output length in octets of the derived
-        /// key; a positive integer less than or equal to
-        /// (2^32 - 1) * hLen where hLen is 32. </param>
-        /// <returns> Derived key, of length dkLen octets. </returns>
-        /// <example>
-        /// <code>
-        /// Scrypt.Encode(new byte[] { 0x70 }, new byte[] { 0x70, 0x6C, 0x65, 0x61, 0x73, 0x65, 0x6C, 0x65 }, 16384, 8, 1, 64)
-        /// </code>
-        /// </example>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="passphrase"/> or <paramref name="salt"/> is null.
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="salt"/> does not meet the requirements
-        /// </exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// One of the parameters <paramref name="N"/>, <paramref name="r"/>, <paramref name="p"/>, 
-        /// <paramref name="dkLen"/> does not meet the requirements.
-        /// </exception>
-        /// <exception cref="Exception"> Internal error. </exception>
-        /// <seealso cref="Scrypt.Encode(string, string, int, int, int, int)"/>
+        /// <include file='docs.xml' path='docs/members[@name="scrypt"]/EncodeBytes/*'/>
         public static byte[] Encode(byte[] passphrase, byte[] salt, int N, int r, int p, int dkLen)
         {
             if (passphrase is null)
