@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections;
+using MathNet.Numerics;
+
+namespace NIST_STS.Tests
+{
+    /// <summary>
+    /// Частотный тест.
+    /// </summary>
+    /// <remarks>
+    /// Рекомендуемая длина для тестируемой последовательности - не менее 100 бит.
+    /// </remarks>
+    class FrequencyTest : ITest
+    {
+        private const double alpha = 0.01;
+        
+        private static double ComputePvalue(BitArray sequence)
+        {
+            int Sn = 0;
+
+            foreach (bool bit in sequence)
+            {
+                Sn += bit ? 1 : (-1);
+            }
+
+            double Sobs = Math.Abs(Sn) / Math.Sqrt(sequence.Length);
+            double Pvalue = SpecialFunctions.Erfc(Sobs / Math.Sqrt(2));
+            return Pvalue;
+        }
+
+        public bool Run(BitArray sequence)
+        {
+            return ComputePvalue(sequence) >= alpha;
+        }
+
+        public bool Run(BitArray sequence, out double[] Pvalues)
+        {
+            Pvalues = new double[] { ComputePvalue(sequence) };
+            return Pvalues[0] >= alpha;
+        }
+    }
+}
