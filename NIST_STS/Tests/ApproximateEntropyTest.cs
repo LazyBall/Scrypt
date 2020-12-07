@@ -7,7 +7,7 @@ namespace NIST_STS.Tests
     /// <summary>
     /// Тест приближенной энтропии.
     /// </summary>
-    class ApproximateEntropyTest : ITest
+    public class ApproximateEntropyTest : ITest
     {
         private const double alpha = 0.01;
         private readonly int _blockSize;
@@ -23,7 +23,7 @@ namespace NIST_STS.Tests
             int n = sequence.Length;
             double ApEn = ComputePhi(m, sequence) - ComputePhi(m + 1, sequence);
             double x2stat = 2 * n * (Math.Log(2) - ApEn);
-            double Pvalue = SpecialFunctions.GammaLowerRegularized(Math.Pow(2, m - 1), x2stat / 2);
+            double Pvalue = SpecialFunctions.GammaUpperRegularized(Math.Pow(2, m - 1), x2stat / 2);
             return Pvalue;
         }
 

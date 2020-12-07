@@ -7,7 +7,7 @@ namespace NIST_STS.Tests
     /// <summary>
     /// Тест серий.
     /// </summary>
-    class SerialTest : ITest
+    public class SerialTest : ITest
     {
         private const double alpha = 0.01;
         private readonly int _blockSize;
@@ -37,8 +37,10 @@ namespace NIST_STS.Tests
             double psi2_m2 = ComputePsi2(m - 2, sequence);
             double delta = psi2_m - psi2_m1;
             double delta2 = psi2_m - 2 * psi2_m1 + psi2_m2;
-            double Pvalue1 = SpecialFunctions.GammaLowerRegularized(Math.Pow(2, m - 2), delta);
-            double Pvalue2 = SpecialFunctions.GammaLowerRegularized(Math.Pow(2, m - 3), delta2);
+            double Pvalue1 = 
+                SpecialFunctions.GammaUpperRegularized(Math.Pow(2, m - 1) / 2, delta / 2);
+            double Pvalue2 = 
+                SpecialFunctions.GammaUpperRegularized(Math.Pow(2, m - 2) / 2, delta2 / 2);
             return (Pvalue1, Pvalue2);
         }
 

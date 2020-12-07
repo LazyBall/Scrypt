@@ -2,7 +2,7 @@
 
 namespace NIST_STS.Tests
 {
-    interface ITest
+    public interface ITest
     {
         /// <summary>
         /// Метод запуска теста.

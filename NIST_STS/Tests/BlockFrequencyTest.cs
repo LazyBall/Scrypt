@@ -7,7 +7,7 @@ namespace NIST_STS.Tests
     /// <summary>
     /// Частотный блочный тест.
     /// </summary>
-    class BlockFrequencyTest : ITest
+    public class BlockFrequencyTest : ITest
     {
         private const double alpha = 0.01;
         private readonly int _blockSize;
@@ -44,7 +44,7 @@ namespace NIST_STS.Tests
             }
 
             x2stat *= 4 * M;
-            return SpecialFunctions.GammaLowerRegularized(N / 2, x2stat / 2);
+            return SpecialFunctions.GammaUpperRegularized(N / 2.0, x2stat / 2);
         }
 
         public bool Run(BitArray sequence)

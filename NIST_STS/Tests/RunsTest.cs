@@ -7,7 +7,7 @@ namespace NIST_STS.Tests
     /// <summary>
     /// Тест "дырок".
     /// </summary>
-    class RunsTest : ITest
+    public class RunsTest : ITest
     {
         private const double alpha = 0.01;
 
@@ -33,7 +33,7 @@ namespace NIST_STS.Tests
 
                 for (int k = 1; k < n; k++)
                 {
-                    if (sequence[k] == sequence[k - 1])
+                    if (sequence[k] != sequence[k - 1])
                     {
                         Vn++;
                     }

@@ -10,7 +10,7 @@ namespace NIST_STS.Tests
     /// <remarks>
     /// Рекомендуемая длина для тестируемой последовательности - не менее 100 бит.
     /// </remarks>
-    class FrequencyTest : ITest
+    public class FrequencyTest : ITest
     {
         private const double alpha = 0.01;
         

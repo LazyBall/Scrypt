@@ -7,7 +7,7 @@ namespace NIST_STS.Tests
     /// <summary>
     /// Тест кумулятивных сумм.
     /// </summary>
-    class CusumTest : ITest
+    public class CusumTest : ITest
     {
         private const double alpha = 0.01;
         private readonly bool _forwardMode;
@@ -64,13 +64,13 @@ namespace NIST_STS.Tests
             int n = sequence.Length;
             int z = ComputeZ(sequence);
 
-            double Pvalue = 0;
+            double Pvalue = 1;
             Normal distribution = new Normal();
 
             for (int k = (-n / z + 1) / 4; k <= (n / z - 1) / 4; k++)
             {
-                Pvalue += distribution.CumulativeDistribution((4 * k + 1) * z / Math.Sqrt(n));
-                Pvalue -= distribution.CumulativeDistribution((4 * k - 1) * z / Math.Sqrt(n));
+                Pvalue -= distribution.CumulativeDistribution((4 * k + 1) * z / Math.Sqrt(n));
+                Pvalue += distribution.CumulativeDistribution((4 * k - 1) * z / Math.Sqrt(n));
             }
 
             for (int k = (-n / z - 3) / 4; k <= (n / z - 1) / 4; k++)
@@ -79,7 +79,6 @@ namespace NIST_STS.Tests
                 Pvalue -= distribution.CumulativeDistribution((4 * k + 1) * z / Math.Sqrt(n));
             }
 
-            Pvalue = 1 - Pvalue;
             return Pvalue;
         }
 
