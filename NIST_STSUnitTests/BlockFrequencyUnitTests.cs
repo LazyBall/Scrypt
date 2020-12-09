@@ -21,7 +21,7 @@ namespace NIST_STSUnitTests
 
         private bool RunTest(int testNumber)
         {
-            BlockFrequencyTest blockFrTest = new 
+            BlockFrequencyTest blockFrTest = new
                 BlockFrequencyTest(this._testData[testNumber].blockSize);
             bool result = Helper.CheckTest(blockFrTest, this._testData[testNumber].sequence,
                 this._testData[testNumber].Pvalue);

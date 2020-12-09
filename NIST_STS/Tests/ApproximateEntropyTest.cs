@@ -1,6 +1,7 @@
-﻿using System;
+﻿using MathNet.Numerics;
+using System;
 using System.Collections;
-using MathNet.Numerics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NIST_STS.Tests
 {
@@ -72,6 +73,18 @@ namespace NIST_STS.Tests
         {
             Pvalues = new double[] { ComputePvalue(sequence) };
             return Pvalues[0] >= alpha;
+        }
+
+        public bool Equals([AllowNull] ITest other)
+        {
+            if (other is ApproximateEntropyTest apTest && this._blockSize == apTest._blockSize)
+                return true;
+            else return false;
+        }
+
+        public override string ToString()
+        {
+            return this.GetType().Name + " with blockSize = " + this._blockSize;
         }
     }
 }

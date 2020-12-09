@@ -1,6 +1,7 @@
-﻿using System;
+﻿using MathNet.Numerics.Distributions;
+using System;
 using System.Collections;
-using MathNet.Numerics.Distributions;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NIST_STS.Tests
 {
@@ -91,6 +92,18 @@ namespace NIST_STS.Tests
         {
             Pvalues = new double[] { ComputePvalue(sequence) };
             return Pvalues[0] >= alpha;
+        }
+
+        public bool Equals([AllowNull] ITest other)
+        {
+            if (other is CusumTest cTest && this._forwardMode == cTest._forwardMode)
+                return true;
+            else return false;
+        }
+
+        public override string ToString()
+        {
+            return this.GetType().Name + " with forwardMode = " + this._forwardMode;
         }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
 namespace NIST_STS.Tests
 {
-    public interface ITest
+    public interface ITest : IEquatable<ITest>
     {
         /// <summary>
         /// Метод запуска теста.

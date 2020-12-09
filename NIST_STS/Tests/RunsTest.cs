@@ -1,6 +1,7 @@
-﻿using System;
+﻿using MathNet.Numerics;
+using System;
 using System.Collections;
-using MathNet.Numerics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace NIST_STS.Tests
 {
@@ -46,6 +47,12 @@ namespace NIST_STS.Tests
             return Pvalue;
         }
 
+        public bool Equals([AllowNull] ITest other)
+        {
+            if (other is RunsTest) return true;
+            else return false;
+        }
+
         public bool Run(BitArray sequence)
         {
             return ComputePvalue(sequence) >= alpha;
@@ -55,6 +62,11 @@ namespace NIST_STS.Tests
         {
             Pvalues = new double[] { ComputePvalue(sequence) };
             return Pvalues[0] >= alpha;
+        }
+
+        public override string ToString()
+        {
+            return this.GetType().Name;
         }
     }
 }
