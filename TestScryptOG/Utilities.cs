@@ -135,7 +135,7 @@ namespace TestScryptOG
             Console.WriteLine();
             Console.WriteLine("\t\t\t\t\t R E S U L T S \n");
             Console.WriteLine(Enumerable.Repeat('#', 90).ToArray());
-            Console.WriteLine("Count os sequences: {0} \n", this._sequencesCount);
+            Console.WriteLine("Count of sequences: {0} \n", this._sequencesCount);
             Console.WriteLine(string.Format("{0,45}{1,10}{2,10}{3,10}\n",
                 "Test", "Success", "Percent", "Warning"));
 
@@ -161,7 +161,7 @@ namespace TestScryptOG
             Console.WriteLine("[chg] - change generator");
             Console.WriteLine("[chsc] - change sequences count");
             Console.WriteLine("[chsl] - change sequence length");
-            Console.WriteLine("[clear] - cleare runlist");
+            Console.WriteLine("[clear] - clear runlist");
             Console.WriteLine("[del] - delete test from runlist");
             Console.WriteLine("[exit] - close programm");
             Console.WriteLine("[help] - show help");
