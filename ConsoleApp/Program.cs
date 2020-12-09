@@ -1,5 +1,5 @@
-﻿using System;
-using ScryptCryptography;
+﻿using ScryptCryptography;
+using System;
 
 namespace ConsoleApp
 {
@@ -14,16 +14,8 @@ namespace ConsoleApp
 
             Console.WriteLine("Scrypt-OG:");
             Console.WriteLine(
-                BitConverter.ToString(Scrypt_OG.Encode("pleaseletmein", "SodiumChloride"))
+                BitConverter.ToString(ScryptOG.Encode("pleaseletmein", "SodiumChloride"))
                 );
-        }
-
-        static class Scrypt_OG
-        {
-            public static byte[] Encode(string password, string salt)
-            {
-                return Scrypt.Encode(password, salt, 64, 1, 1, 32);
-            }
         }
     }
 }

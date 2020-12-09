@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using ScryptCryptography;
+using System;
 
 namespace ScryptUnitTests
 {
@@ -13,7 +13,7 @@ namespace ScryptUnitTests
             string actualHash =
                  BitConverter.ToString(Scrypt.Encode("pleaseletmein", "SodiumChloride", 16384, 8, 1, 64));
             actualHash = actualHash.Replace("-", " ");
-            string expectedHash = 
+            string expectedHash =
                 "70 23 bd cb 3a fd 73 48 46 1c 06 cd 81 fd 38 eb " +
                 "fd a8 fb ba 90 4f 8e 3e a9 b5 43 f6 54 5d a1 f2 " +
                 "d5 43 29 55 61 3f 0f cf 62 d4 97 05 24 2a 9a f9 " +
