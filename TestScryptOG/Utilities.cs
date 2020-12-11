@@ -136,16 +136,15 @@ namespace TestScryptOG
             Console.WriteLine("\t\t\t\t\t R E S U L T S \n");
             Console.WriteLine(Enumerable.Repeat('#', 90).ToArray());
             Console.WriteLine("Count of sequences: {0} \n", this._sequencesCount);
-            Console.WriteLine(string.Format("{0,45}{1,10}{2,10}{3,10}\n",
-                "Test", "Success", "Percent", "Warning"));
+            Console.WriteLine("{0,45}{1,10}{2,10}{3,10}\n", "Test", "Success",
+                "Percent", "Warning");
 
             foreach ((ITest test, int success) in results)
             {
                 double percent = (double)success / this._sequencesCount;
                 string mark = (percent < 0.99) ? "*" : "";
-                string row = String.Format("{0,45}{1,10}{2,10}{3,10}\n", test, success,
-                    (double)success / this._sequencesCount, mark);
-                Console.WriteLine(row);
+                Console.WriteLine("{0,45}{1,10}{2,10:F3}{3,10}\n", test, success,
+                    percent, mark);
             }
 
             Console.WriteLine(Enumerable.Repeat('#', 90).ToArray());
@@ -217,7 +216,7 @@ namespace TestScryptOG
         {
             Console.Write("Enter new count of sequences (min 1): ");
 
-            if (int.TryParse(Console.ReadLine(), out int count) && count > 0)
+            if (int.TryParse(Console.ReadLine(), out int count) && count >= 1)
             {
                 this._sequencesCount = count;
                 Console.WriteLine("Change successful.\n");
@@ -234,7 +233,7 @@ namespace TestScryptOG
 
             if (int.TryParse(Console.ReadLine(), out int length) && length >= 100)
             {
-                this._sequencesCount = length;
+                this._sequenceLength = length;
                 Console.WriteLine("Change successful.\n");
             }
             else
@@ -263,14 +262,14 @@ namespace TestScryptOG
 
                 case ("2"):
                     Console.WriteLine("Enter Block Frequency Test Parameters.");
-                    Console.Write("Enter a block size (default 10): ");
+                    Console.Write("Enter a block size (min 2, default 10): ");
                     string inputBF = Console.ReadLine();
                     if (string.IsNullOrEmpty(inputBF))
                     {
                         test = new BlockFrequencyTest();
                         break;
                     }
-                    else if (int.TryParse(inputBF, out int blockSize))
+                    else if (int.TryParse(inputBF, out int blockSize) && blockSize >= 2)
                     {
                         test = new BlockFrequencyTest(blockSize);
                         break;
@@ -283,7 +282,7 @@ namespace TestScryptOG
 
                 case ("3"):
                     Console.WriteLine("Enter Cumulative Sums Test Parameters.");
-                    Console.Write("Forward mode? [yes/no] (default yes): ");
+                    Console.Write("Forward mode? ([yes/no], default yes): ");
                     string inputCT = Console.ReadLine();
                     if (string.IsNullOrEmpty(inputCT) || inputCT == "yes")
                     {
@@ -307,14 +306,15 @@ namespace TestScryptOG
 
                 case ("5"):
                     Console.WriteLine("Enter Approximate Entropy Test Parameters.");
-                    Console.Write("Enter a block size (default 3): ");
+                    Console.Write("Enter a block size ([2-20], default 3): ");
                     string inputAT = Console.ReadLine();
                     if (string.IsNullOrEmpty(inputAT))
                     {
                         test = new ApproximateEntropyTest();
                         break;
                     }
-                    else if (int.TryParse(inputAT, out int blockSize))
+                    else if (int.TryParse(inputAT, out int blockSize) && blockSize >= 2
+                        && blockSize <= 20)
                     {
                         test = new ApproximateEntropyTest(blockSize);
                         break;
@@ -327,14 +327,15 @@ namespace TestScryptOG
 
                 case ("6"):
                     Console.WriteLine("Enter Serial Test Parameters.");
-                    Console.Write("Enter a block size (default 3): ");
+                    Console.Write("Enter a block size ([2-20], default 3): ");
                     string inputST = Console.ReadLine();
                     if (string.IsNullOrEmpty(inputST))
                     {
                         test = new SerialTest();
                         break;
                     }
-                    else if (int.TryParse(inputST, out int blockSize))
+                    else if (int.TryParse(inputST, out int blockSize) && blockSize >= 2
+                        && blockSize <= 20)
                     {
                         test = new SerialTest(blockSize);
                         break;
