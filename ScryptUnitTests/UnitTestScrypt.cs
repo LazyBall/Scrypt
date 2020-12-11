@@ -21,7 +21,7 @@ namespace ScryptUnitTests
             Assert.AreEqual(expectedHash, actualHash, ignoreCase: true);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void TestEncodeStrWithBigN()
         {
             string actualHash =
@@ -53,7 +53,7 @@ namespace ScryptUnitTests
             Assert.AreEqual(expectedHash, actualHash, ignoreCase: true);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void TestEncodeBytesWithBigN()
         {
             string actualHash =
