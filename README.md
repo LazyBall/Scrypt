@@ -1,3 +1,7 @@
+
+# Консольная утилита TestScryptOG
+Предназначена для тестирования псевдослучайной битовой последовательности, генерируемой алгоритмом ScryptOG.
+
 # Useful Links
 ## Scrypt
 * https://github.com/viniciuschiele/Scrypt/blob/master/src/Scrypt/ScryptEncoder.cs
