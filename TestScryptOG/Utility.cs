@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace TestScryptOG
 {
-    class Utilities
+    class Utility
     {
         private List<ITest> _runList;
         private int _sequencesCount;
@@ -14,7 +14,7 @@ namespace TestScryptOG
         private IBitSequenceGenerator _generator;
         private bool _firstRun;
 
-        public Utilities()
+        public Utility()
         {
             this._runList = new List<ITest>
             {

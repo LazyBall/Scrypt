@@ -6,7 +6,7 @@ namespace TestScryptOG
     {
         static void Main()
         {
-            Utilities testUtility = new Utilities();
+            Utility testUtility = new Utility();
             testUtility.ShowMain();
         }
     }
